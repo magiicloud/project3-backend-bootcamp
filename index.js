@@ -1,7 +1,21 @@
-import express from "express";
+const cors = require("cors");
+const express = require("express");
+const { auth } = require("express-oauth2-jwt-bearer");
+require("dotenv").config();
 
-const PORT = 3000;
+const PORT = process.env.PORT;
 const app = express();
+const { auth } = require("express-oauth2-jwt-bearer");
+
+// Authorization middleware. When used, the Access Token must
+// exist and be verified against the Auth0 JSON Web Key Set.
+const checkJwt = auth({
+  audience: process.env.AUTH_API,
+  issuerBaseURL: process.env.AUTH_DOMAIN,
+});
+
+// Enable CORS access to this server
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");
