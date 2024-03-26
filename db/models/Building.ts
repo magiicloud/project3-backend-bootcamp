@@ -12,7 +12,7 @@ import { BuildingUser } from "./BuildingUser";
 
 interface BuildingAttributes {
   name: string;
-  item_size: string;
+  image_size: string;
   building_img_url: string;
 }
 
@@ -25,7 +25,7 @@ export class Building extends Model<BuildingAttributes> {
   name!: string;
 
   @Column(DataType.STRING)
-  item_size!: string;
+  image_size!: string;
 
   @Column(DataType.STRING)
   building_img_url!: string;

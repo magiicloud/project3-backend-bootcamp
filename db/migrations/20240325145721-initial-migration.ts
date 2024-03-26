@@ -72,7 +72,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      item_size: {
+      image_size: {
         allowNull: false,
         type: Sequelize.STRING,
       },
