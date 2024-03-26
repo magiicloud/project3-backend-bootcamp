@@ -15,7 +15,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Building",
+          model: "Buildings",
           key: "id",
         },
       },
@@ -23,7 +23,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "User",
+          model: "Users",
           key: "id",
         },
       },
@@ -52,7 +52,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Cart",
+          model: "Carts",
           key: "id",
         },
       },
@@ -60,7 +60,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Item",
+          model: "Items",
           key: "id",
         },
       },
@@ -93,7 +93,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Room",
+          model: "Rooms",
           key: "id",
         },
       },
@@ -101,7 +101,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: "Item",
+          model: "Items",
           key: "id",
         },
       },
