@@ -16,6 +16,7 @@ interface CartAttributes {
 }
 
 @Table({
+  tableName: "Carts",
   modelName: "Cart",
   underscored: true,
 })

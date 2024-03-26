@@ -18,6 +18,7 @@ interface RoomAttributes {
 }
 
 @Table({
+  tableName: "Rooms",
   modelName: "Room",
   underscored: true,
 })

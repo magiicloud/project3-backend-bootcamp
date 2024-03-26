@@ -1,52 +1,59 @@
-"use strict";
 import { Sequelize } from "sequelize-typescript";
-import * as fs from "fs";
-import * as path from "path";
-import process from "process";
+import { Item } from "./Item";
+import { Cart } from "./Cart";
+import { Building } from "./Building";
+import { BuildingUser } from "./BuildingUser";
+import { CartLineItem } from "./CartLineItem";
+import { Room } from "./Room";
+import { RoomItem } from "./RoomItem";
+import { Transaction } from "./Transaction";
+import { User } from "./User";
+import { Dialect } from "sequelize";
+import dotenv from "dotenv";
+dotenv.config();
 
-// const process = require("process");
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../../config/database.js")[env];
-const db: any = {};
-
-let sequelize: Sequelize;
-if (config.use_env_variable) {
-  const databaseUrl = process.env[config.use_env_variable] as string;
-  sequelize = new Sequelize(databaseUrl, config);
-  // sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
-}
-
-// Read all model files and import them
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf(".") !== 0 &&
-      file !== basename &&
-      file.slice(-3) === ".ts" &&
-      file.indexOf(".test.ts") === -1
-    );
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file)).default;
-    db[model.name] = model;
-  });
-
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+const sequelize = new Sequelize({
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT as Dialect,
+  models: [
+    Building,
+    BuildingUser,
+    CartLineItem,
+    Item,
+    Cart,
+    Room,
+    RoomItem,
+    Transaction,
+    User,
+  ],
 });
 
-// Export sequelize instance and models
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+// Attach models to Sequelize instance
+sequelize.addModels([
+  Building,
+  BuildingUser,
+  CartLineItem,
+  Item,
+  Cart,
+  Room,
+  RoomItem,
+  Transaction,
+  User,
+]);
 
-module.exports = db;
+// Export model instance
+export {
+  sequelize,
+  Item,
+  Cart,
+  Building,
+  BuildingUser,
+  CartLineItem,
+  Room,
+  RoomItem,
+  Transaction,
+  User,
+};

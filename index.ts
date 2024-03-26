@@ -1,7 +1,10 @@
-const cors = require("cors");
-const express = require("express");
-const { auth } = require("express-oauth2-jwt-bearer");
-require("dotenv").config();
+import cors from "cors";
+import express from "express";
+import { auth } from "express-oauth2-jwt-bearer";
+import dotenv from "dotenv";
+import { ItemsRouter } from "./routers/itemsRouter";
+
+dotenv.config();
 
 const PORT = process.env.PORT;
 const app = express();
@@ -16,9 +19,9 @@ const checkJwt = auth({
 // Enable CORS access to this server
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
+// Routers
+const itemsRouter = new ItemsRouter().routes();
+app.use(itemsRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);

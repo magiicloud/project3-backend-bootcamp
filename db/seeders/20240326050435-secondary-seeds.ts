@@ -10,22 +10,22 @@ module.exports = {
         name: "Main Area",
         room_coordinates: "pdiamond@gmail.com",
         building_id: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         name: "Store Room",
         room_coordinates: "pdiamond@gmail.com",
         building_id: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         name: "Satellite",
         room_coordinates: "pdiamond@gmail.com",
         building_id: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ]);
 
@@ -33,20 +33,20 @@ module.exports = {
       {
         active: true,
         user_id: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         active: false,
         user_id: 2,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
         active: false,
         user_id: 3,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ]);
 
@@ -55,8 +55,8 @@ module.exports = {
         cart_id: 1,
         room_id: 1,
         cycle_count: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ]);
   },

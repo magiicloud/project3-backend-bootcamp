@@ -14,6 +14,7 @@ interface BuildingUserAttributes {
 }
 
 @Table({
+  tableName: "Building_Users",
   modelName: "BuildingUser",
   underscored: true,
 })

@@ -17,6 +17,7 @@ interface BuildingAttributes {
 }
 
 @Table({
+  tableName: "Buildings",
   modelName: "Building",
   underscored: true,
 })

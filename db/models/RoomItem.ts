@@ -18,7 +18,8 @@ interface RoomItemAttributes {
 }
 
 @Table({
-  modelName: "Room_Item",
+  tableName: "Room_Items",
+  modelName: "RoomItem",
   underscored: true,
 })
 export class RoomItem extends Model<RoomItemAttributes> {

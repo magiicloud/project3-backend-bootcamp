@@ -17,6 +17,7 @@ interface CartLineItemAttributes {
 }
 
 @Table({
+  tableName: "Cart_Line_Items",
   modelName: "CartLineItem",
   underscored: true,
 })

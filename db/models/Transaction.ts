@@ -14,6 +14,7 @@ interface TransactionAttributes {
 }
 
 @Table({
+  tableName: "Transactions",
   modelName: "Transaction",
   underscored: true,
 })

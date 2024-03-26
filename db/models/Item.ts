@@ -10,6 +10,7 @@ interface ItemAttributes {
 
 @Table({
   modelName: "Item",
+  tableName: "Items",
   underscored: true,
 })
 export class Item extends Model<ItemAttributes> {
