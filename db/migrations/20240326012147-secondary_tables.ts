@@ -4,7 +4,7 @@ import { QueryInterface, DataTypes } from "sequelize";
 
 module.exports = {
   async up(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-    await queryInterface.createTable("Users", {
+    await queryInterface.createTable("Rooms", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,12 +15,17 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      email: {
+      room_coordinates: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      profile_img_url: {
-        type: Sequelize.STRING,
+      building_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Building",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,
@@ -32,24 +37,24 @@ module.exports = {
       },
     });
 
-    await queryInterface.createTable("Items", {
+    await queryInterface.createTable("Carts", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      serial_num: {
+      active: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.BOOLEAN,
       },
-      item_name: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      par_level: {
+      user_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        references: {
+          model: "User",
+          key: "id",
+        },
       },
       createdAt: {
         allowNull: false,
@@ -61,24 +66,32 @@ module.exports = {
       },
     });
 
-    await queryInterface.createTable("Buildings", {
+    await queryInterface.createTable("Transactions", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      item_size: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      building_img_url: {
+      cart_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        references: {
+          model: "Cart",
+          key: "id",
+        },
+      },
+      room_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Room",
+          key: "id",
+        },
+      },
+      cycle_count: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
@@ -91,8 +104,8 @@ module.exports = {
     });
   },
   async down(queryInterface: QueryInterface, Sequelize: typeof DataTypes) {
-    await queryInterface.dropTable("Buildings");
-    await queryInterface.dropTable("Items");
-    await queryInterface.dropTable("Users");
+    await queryInterface.dropTable("Transactions");
+    await queryInterface.dropTable("Carts");
+    await queryInterface.dropTable("Rooms");
   },
 };
