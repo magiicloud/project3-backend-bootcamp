@@ -26,8 +26,17 @@ export class Room extends Model<RoomAttributes> {
   @Column(DataType.STRING)
   name!: string;
 
-  @Column(DataType.STRING)
-  room_coordinates!: string;
+  @Column(DataType.FLOAT)
+  left!: Float64Array;
+
+  @Column(DataType.FLOAT)
+  top!: Float64Array;
+
+  @Column(DataType.FLOAT)
+  height!: Float64Array;
+
+  @Column(DataType.FLOAT)
+  width!: Float64Array;
 
   @ForeignKey(() => Building)
   @Column(DataType.INTEGER)

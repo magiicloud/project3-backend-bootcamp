@@ -92,7 +92,8 @@ module.exports = {
       {
         name: "Health Plus",
         image_size: "250px",
-        building_img_url: "https://www.buildingimgurl.com",
+        building_img_url:
+          "https://firebasestorage.googleapis.com/v0/b/rocket-academy-proj3.appspot.com/o/floorplans%2FWorkplace%201?alt=media&token=43b7e8a1-b4dd-4059-9f03-96b1d87cc0fe",
         created_at: new Date(),
         updated_at: new Date(),
       },

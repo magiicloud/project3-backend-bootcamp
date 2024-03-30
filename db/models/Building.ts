@@ -35,6 +35,6 @@ export class Building extends Model<BuildingAttributes> {
   @HasMany(() => Room)
   rooms!: Room[];
 
-  @BelongsToMany(() => User, () => BuildingUser)
+  @HasMany(() => BuildingUser)
   users!: User[];
 }
