@@ -20,6 +20,9 @@ const checkJwt = auth({
 // Enable CORS access to this server
 app.use(cors());
 
+//JSON middleware
+app.use(express.json());
+
 // Routers
 const itemsRouter = new ItemsRouter().routes();
 const buildingsRouter = new BuildingsRouter().routes();
