@@ -7,6 +7,8 @@ export class ItemsRouter {
   routes = () => {
     const router = Router();
     router.get("/allitems", itemsController.getAllItems);
+    router.get("/finditem/:itemId/:roomId", itemsController.findOneItem);
+    router.get("/findserial/:serialNum/:roomId", itemsController.findBySerial);
     return router;
   };
 }
