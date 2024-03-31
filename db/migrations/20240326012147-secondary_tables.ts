@@ -15,9 +15,21 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      room_coordinates: {
+      left: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.FLOAT,
+      },
+      top: {
+        allowNull: false,
+        type: Sequelize.FLOAT,
+      },
+      height: {
+        allowNull: false,
+        type: Sequelize.FLOAT,
+      },
+      width: {
+        allowNull: false,
+        type: Sequelize.FLOAT,
       },
       building_id: {
         allowNull: false,

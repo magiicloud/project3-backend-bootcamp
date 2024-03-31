@@ -3,6 +3,7 @@ import express from "express";
 import { auth } from "express-oauth2-jwt-bearer";
 import dotenv from "dotenv";
 import { ItemsRouter } from "./routers/itemsRouter";
+import { BuildingsRouter } from "./routers/buildingsRouter";
 
 dotenv.config();
 
@@ -21,7 +22,10 @@ app.use(cors());
 
 // Routers
 const itemsRouter = new ItemsRouter().routes();
+const buildingsRouter = new BuildingsRouter().routes();
+
 app.use(itemsRouter);
+app.use(buildingsRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
