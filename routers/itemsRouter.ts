@@ -11,6 +11,7 @@ export class ItemsRouter {
     router.get("/finditem/:itemId/:roomId", itemsController.findOneItem);
     router.get("/findserial/:serialNum/:roomId", itemsController.findBySerial);
     router.put("/updateitem", itemsController.updateItem);
+    router.post("/addnewitem", itemsController.addNewItem);
     return router;
   };
 }
