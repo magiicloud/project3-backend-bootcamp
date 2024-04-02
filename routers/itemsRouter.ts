@@ -12,6 +12,8 @@ export class ItemsRouter {
     router.get("/findserial/:serialNum/:roomId", itemsController.findBySerial);
     router.put("/updateitem", itemsController.updateItem);
     router.post("/addnewitem", itemsController.addNewItem);
+    router.delete("/deleteroomitem", itemsController.deleteRoomItem);
+    router.delete("/deleteitem", itemsController.deleteItem);
     return router;
   };
 }
