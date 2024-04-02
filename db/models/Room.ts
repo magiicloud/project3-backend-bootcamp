@@ -13,7 +13,10 @@ import { RoomItem } from "./RoomItem";
 
 interface RoomAttributes {
   name: string;
-  room_coordinates: string;
+  left: Float64Array;
+  top: Float64Array;
+  width: Float64Array;
+  height: Float64Array;
   building_id: number;
 }
 
