@@ -107,7 +107,6 @@ export class ItemsController {
       if (item) {
         // Update existing item
         await item.update({
-          item_name: itemName,
           par_level: par,
         });
       } else {
