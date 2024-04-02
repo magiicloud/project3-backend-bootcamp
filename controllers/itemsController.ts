@@ -102,19 +102,45 @@ export class ItemsController {
         uom,
       } = req.body;
 
-      const item = await Item.create({
-        serial_num: serialNum,
-        item_name: itemName,
-        par_level: par,
+      let item = await Item.findOne({ where: { serial_num: serialNum } });
+
+      if (item) {
+        // Update existing item
+        await item.update({
+          item_name: itemName,
+          par_level: par,
+        });
+      } else {
+        item = await Item.create({
+          serial_num: serialNum,
+          item_name: itemName,
+          par_level: par,
+        });
+      }
+
+      // Check if a RoomItem entry exists for this item and room
+      let roomItem = await RoomItem.findOne({
+        where: { item_id: item.id, room_id: roomSelect },
       });
 
-      const roomItem = await RoomItem.create({
-        item_id: item.id,
-        quantity: quantity as number,
-        expiry_date: expiryDate as Date,
-        uom: uom as string,
-        room_id: roomSelect as number,
-      });
+      if (roomItem) {
+        // Update existing RoomItem entry
+        await roomItem.update({
+          quantity: quantity,
+          expiry_date: expiryDate,
+          uom: uom,
+        });
+      } else {
+        // Create a new RoomItem entry
+
+        const roomItem = await RoomItem.create({
+          item_id: item.id,
+          quantity: quantity as number,
+          expiry_date: expiryDate as Date,
+          uom: uom as string,
+          room_id: roomSelect as number,
+        });
+      }
 
       return res.json({ success: true, item: item, roomItem: roomItem });
     } catch (err) {
