@@ -89,4 +89,36 @@ export class ItemsController {
       return res.status(400).json({ error: true, msg: (err as Error).message });
     }
   }
+
+  async addNewItem(req: Request, res: Response) {
+    try {
+      const {
+        serialNum,
+        itemName,
+        quantity,
+        expiryDate,
+        roomSelect,
+        par,
+        uom,
+      } = req.body;
+
+      const item = await Item.create({
+        serial_num: serialNum,
+        item_name: itemName,
+        par_level: par,
+      });
+
+      const roomItem = await RoomItem.create({
+        item_id: item.id,
+        quantity: quantity as number,
+        expiry_date: expiryDate as Date,
+        uom: uom as string,
+        room_id: roomSelect as number,
+      });
+
+      return res.json({ success: true, item: item, roomItem: roomItem });
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: (err as Error).message });
+    }
+  }
 }
