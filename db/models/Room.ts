@@ -10,6 +10,7 @@ import {
 import { Building } from "./Building";
 import { Transaction } from "./Transaction";
 import { RoomItem } from "./RoomItem";
+import { CartLineItem } from "./CartLineItem";
 
 interface RoomAttributes {
   name: string;
@@ -54,4 +55,7 @@ export class Room extends Model<RoomAttributes> {
 
   @HasMany(() => RoomItem)
   roomItems!: RoomItem[];
+
+  @HasMany(() => CartLineItem)
+  cartLineItems!: CartLineItem[];
 }

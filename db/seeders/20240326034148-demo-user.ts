@@ -65,27 +65,6 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
-      {
-        serial_num: "0005-84-153-F",
-        item_name: "KETOPROFEN 30MG PLAST(KEFENTECH)7S/8S/9S",
-        par_level: 250,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        serial_num: "0004-40-022-F",
-        item_name: "calcium CARBONATE 625mg tab",
-        par_level: 350,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
-      {
-        serial_num: "0463-49-68X-9",
-        item_name: "IRON POLYMALTOSE 100MG CAP",
-        par_level: 300,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
     ]);
 
     await queryInterface.bulkInsert("Buildings", [
