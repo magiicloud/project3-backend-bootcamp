@@ -4,6 +4,7 @@ import { auth } from "express-oauth2-jwt-bearer";
 import dotenv from "dotenv";
 import { ItemsRouter } from "./routers/itemsRouter";
 import { BuildingsRouter } from "./routers/buildingsRouter";
+import { CartRouter } from "./routers/cartRouter";
 
 dotenv.config();
 
@@ -42,9 +43,11 @@ app.use(express.json());
 // Routers
 const itemsRouter = new ItemsRouter().routes();
 const buildingsRouter = new BuildingsRouter().routes();
+const cartRouter = new CartRouter().routes();
 
 app.use(itemsRouter);
 app.use(buildingsRouter);
+app.use(cartRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
