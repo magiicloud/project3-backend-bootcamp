@@ -31,7 +31,7 @@ export class CartController {
   }
 
   async addItemToCart(req: Request, res: Response) {
-    const { serialNum, quantity, expiryDate, roomId, userId } = req.body;
+    const { serialNum, quantity, expiryDate, roomSelect, userId } = req.body;
 
     try {
       // Step 1: Find the item by serial number to get the itemId
@@ -53,12 +53,12 @@ export class CartController {
         where: {
           cart_id: cart.id,
           item_id: item.id, // Use the item's id obtained in Step 1
-          room_id: roomId,
+          room_id: roomSelect,
         },
         defaults: {
           cart_id: cart.id,
           item_id: item.id,
-          room_id: roomId,
+          room_id: roomSelect,
           quantity: quantity,
           expiry_date: expiryDate,
         },
