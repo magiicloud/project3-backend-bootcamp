@@ -18,22 +18,6 @@ const checkJwt = auth({
   issuerBaseURL: process.env.AUTH_DOMAIN,
 });
 
-// This route doesn't need authentication
-app.get("/api/public", function (req, res) {
-  res.json({
-    message:
-      "Hello from a public endpoint! You don't need to be authenticated to see this.",
-  });
-});
-
-// This route needs authentication
-app.get("/api/private", checkJwt, function (req, res) {
-  res.json({
-    message:
-      "Hello from a private endpoint! You need to be authenticated to see this.",
-  });
-});
-
 // Enable CORS access to this server
 app.use(cors());
 
@@ -45,9 +29,9 @@ const itemsRouter = new ItemsRouter().routes();
 const buildingsRouter = new BuildingsRouter().routes();
 const cartRouter = new CartRouter().routes();
 
-app.use(itemsRouter);
-app.use(buildingsRouter);
-app.use(cartRouter);
+app.use(checkJwt, itemsRouter);
+app.use(checkJwt, buildingsRouter);
+app.use(checkJwt, cartRouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
