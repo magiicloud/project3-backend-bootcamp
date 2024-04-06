@@ -31,20 +31,21 @@ export class BuildingsController {
   async AddNewBuilding(req: Request, res: Response) {
     const building = req.body.building;
     const rooms = req.body.rooms;
-    const transaction: Transaction = await sequelize.transaction();
     try {
-      const newBuilding = await Building.create(building, {
-        transaction,
+      const result = await sequelize.transaction(async (t) => {
+        const newBuilding = await Building.create(building, {
+          transaction: t,
+        });
+        await Promise.all(
+          rooms.map(async (obj: RoomAttributes) => {
+            const newRoom = { ...obj };
+            newRoom["building_id"] = newBuilding.id;
+            await Room.create(newRoom, { transaction: t });
+          })
+        );
       });
-      rooms.map(async (obj: RoomAttributes) => {
-        const newRoom = { ...obj };
-        newRoom["building_id"] = newBuilding.id;
-        await Room.create(newRoom, { transaction });
-      });
-      await transaction.commit();
-      return res.json(newBuilding);
+      return res.json(result);
     } catch (err) {
-      await transaction.rollback();
       return res.status(400).json({ error: true, msg: err });
     }
   }
