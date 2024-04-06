@@ -8,12 +8,14 @@ import {
 } from "sequelize-typescript";
 import { Cart } from "./Cart";
 import { Item } from "./Item";
+import { Room } from "./Room";
 
 interface CartLineItemAttributes {
   cart_id: number;
   item_id: number;
+  room_id: number;
   quantity: number;
-  consumed: boolean;
+  expiry_date: Date;
 }
 
 @Table({
@@ -30,11 +32,15 @@ export class CartLineItem extends Model<CartLineItemAttributes> {
   @Column(DataType.INTEGER)
   item_id!: number;
 
+  @ForeignKey(() => Room)
+  @Column(DataType.INTEGER)
+  room_id!: number;
+
   @Column(DataType.INTEGER)
   quantity!: number;
 
-  @Column(DataType.BOOLEAN)
-  consumed!: boolean;
+  @Column(DataType.DATE)
+  expiry_date!: Date;
 
   // Associations can be defined here if needed
   @BelongsTo(() => Cart)
@@ -42,4 +48,7 @@ export class CartLineItem extends Model<CartLineItemAttributes> {
 
   @BelongsTo(() => Item)
   item!: Item;
+
+  @BelongsTo(() => Room)
+  room!: Room;
 }

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Item, RoomItem, Room } from "../db/models";
+import { Item, RoomItem, Room, CartLineItem } from "../db/models";
 
 export class ItemsController {
   async getAllItems(req: Request, res: Response) {
@@ -107,7 +107,6 @@ export class ItemsController {
       if (item) {
         // Update existing item
         await item.update({
-          item_name: itemName,
           par_level: par,
         });
       } else {
@@ -119,7 +118,7 @@ export class ItemsController {
       }
 
       // Check if a RoomItem entry exists for this item and room
-      let roomItem = await RoomItem.findOne({
+      const roomItem = await RoomItem.findOne({
         where: { item_id: item.id, room_id: roomSelect },
       });
 
@@ -143,6 +142,72 @@ export class ItemsController {
       }
 
       return res.json({ success: true, item: item, roomItem: roomItem });
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: (err as Error).message });
+    }
+  }
+
+  async deleteItem(req: Request, res: Response) {
+    try {
+      const { serialNum } = req.body;
+
+      // Find the item by serial number
+      let item = await Item.findOne({ where: { serial_num: serialNum } });
+
+      if (!item) {
+        return res.status(404).json({ error: true, msg: "Item not found." });
+      }
+
+      // Delete associated RoomItem entries before deleting the Item
+      await RoomItem.destroy({
+        where: { item_id: item.id },
+      });
+      // Delete associated CartLineItem entries before deleting the Item
+      await CartLineItem.destroy({
+        where: { item_id: item.id },
+      });
+
+      // Delete the item after its associated RoomItem entries have been deleted
+      await item.destroy();
+
+      return res.json({
+        success: true,
+        msg: "Item and associated RoomItem entries deleted successfully.",
+      });
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: (err as Error).message });
+    }
+  }
+
+  async deleteRoomItem(req: Request, res: Response) {
+    try {
+      const { serialNum, roomSelect } = req.body;
+
+      // Find the item by serial number
+      let item = await Item.findOne({ where: { serial_num: serialNum } });
+
+      if (!item) {
+        return res.status(404).json({ error: true, msg: "Item not found." });
+      }
+
+      // Attempt to delete the RoomItem entry linking the item to the specified room
+      const deletionResult = await RoomItem.destroy({
+        where: { item_id: item.id, room_id: roomSelect },
+      });
+
+      // Check if a RoomItem entry was deleted
+      if (deletionResult === 0) {
+        // No RoomItem entry was deleted, possibly because it didn't exist
+        return res
+          .status(404)
+          .json({ error: true, msg: "Item not found in the specified room." });
+      }
+
+      // Successfully deleted the RoomItem entry
+      return res.json({
+        success: true,
+        msg: "Item deleted from the specified room successfully.",
+      });
     } catch (err) {
       return res.status(400).json({ error: true, msg: (err as Error).message });
     }

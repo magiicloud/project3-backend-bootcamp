@@ -6,11 +6,14 @@ import {
   ForeignKey,
   BelongsTo,
   HasMany,
+  PrimaryKey,
+  AutoIncrement,
 } from "sequelize-typescript";
 import { User } from "./User";
 import { CartLineItem } from "./CartLineItem";
 
 interface CartAttributes {
+  id?: number;
   active: boolean;
   user_id: number;
 }
@@ -21,6 +24,11 @@ interface CartAttributes {
   underscored: true,
 })
 export class Cart extends Model<CartAttributes> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id!: number;
+
   @Column(DataType.BOOLEAN)
   active!: boolean;
 
