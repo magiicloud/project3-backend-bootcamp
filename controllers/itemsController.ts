@@ -67,6 +67,24 @@ export class ItemsController {
     }
   }
 
+  async getRoomItems(req: Request, res: Response) {
+    try {
+      const { roomId } = req.params;
+      const output = await Item.findAll({
+        include: [
+          {
+            model: RoomItem,
+            where: { room_id: roomId },
+            include: [{ model: Room, attributes: ["name"] }],
+          },
+        ],
+      });
+      return res.json(output);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: (err as Error).message });
+    }
+  }
+
   async updateItem(req: Request, res: Response) {
     try {
       const { serialNum, quantity, expiryDate, roomSelect } = req.body;
