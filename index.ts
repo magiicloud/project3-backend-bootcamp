@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { ItemsRouter } from "./routers/itemsRouter";
 import { BuildingsRouter } from "./routers/buildingsRouter";
 import { CartRouter } from "./routers/cartRouter";
+import { UsersRouter } from "./routers/usersRouter";
 
 dotenv.config();
 
@@ -44,10 +45,12 @@ app.use(express.json());
 const itemsRouter = new ItemsRouter().routes();
 const buildingsRouter = new BuildingsRouter().routes();
 const cartRouter = new CartRouter().routes();
+const usersrouter = new UsersRouter().routes();
 
 app.use(itemsRouter);
 app.use(buildingsRouter);
 app.use(cartRouter);
+app.use(usersrouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
