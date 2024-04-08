@@ -87,6 +87,35 @@ export class CartController {
     }
   }
 
+  async deleteItemInCart(req: Request, res: Response) {
+    const { cartLineItemId } = req.body;
+    console.log(cartLineItemId);
+
+    try {
+      // Step 1: Find the CartLineItem by PK
+      const cartLineItem = await CartLineItem.findByPk(cartLineItemId);
+      if (!cartLineItem) {
+        return res
+          .status(404)
+          .json({ error: true, message: "Cart item not found." });
+      }
+      // Step 2: Delete the CartLineItem
+      await cartLineItem.destroy();
+
+      res.json({
+        success: true,
+        message: "Item removed from cart successfully.",
+      });
+    } catch (err) {
+      console.error("Failed to delete item from cart:", err);
+      res.status(500).json({
+        success: false,
+        message: "Failed to delete item from cart",
+        error: (err as Error).message,
+      });
+    }
+  }
+
   async checkoutCart(req: Request, res: Response) {
     const userId = 1; //req.body.userId; // Or obtain the userId from session/authentication
 
