@@ -10,6 +10,7 @@ export class ItemsRouter {
     router.get("/allrooms", itemsController.getAllRooms);
     router.get("/finditem/:itemId/:roomId", itemsController.findOneItem);
     router.get("/findserial/:serialNum/:roomId", itemsController.findBySerial);
+    router.get("/items/:roomId", itemsController.getRoomItems);
     router.put("/updateitem", itemsController.updateItem);
     router.post("/addnewitem", itemsController.addNewItem);
     router.delete("/deleteroomitem", itemsController.deleteRoomItem);

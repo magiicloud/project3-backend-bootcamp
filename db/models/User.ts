@@ -11,7 +11,7 @@ import { Cart } from "./Cart";
 import { BuildingUser } from "./BuildingUser";
 
 interface UserAttributes {
-  name: string;
+  name?: string;
   email: string;
   profile_img_url?: string;
 }
@@ -23,7 +23,7 @@ interface UserAttributes {
 })
 export class User extends Model<UserAttributes> {
   @Column(DataType.STRING)
-  name!: string;
+  name?: string;
 
   @Column(DataType.STRING)
   email!: string;
