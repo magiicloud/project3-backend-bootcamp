@@ -14,9 +14,17 @@ interface RoomAttributes {
 
 export class UsersController {
   async updateUser(req: Request, res: Response) {
-    const user = req.body;
+    const { email, name, id, photoUrl } = req.body;
     try {
-      const output = await User.findOrCreate({ where: user });
+      const output = await User.findOrCreate({
+        where: { email: email },
+        defaults: {
+          auth_id: id,
+          email: email,
+          name: name,
+          profile_img_url: photoUrl,
+        },
+      });
       return res.json(output);
     } catch (err) {
       return res.status(400).json({ error: true, msg: (err as Error).message });
