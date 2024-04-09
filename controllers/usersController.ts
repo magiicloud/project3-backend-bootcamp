@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Building, BuildingUser, User, Room, sequelize } from "../db/models";
 import { Sequelize } from "sequelize-typescript";
-import { Dialect, Transaction } from "sequelize";
+import { Dialect, Transaction, where } from "sequelize";
 
 interface RoomAttributes {
   name: string;
@@ -25,6 +25,16 @@ export class UsersController {
           profile_img_url: photoUrl,
         },
       });
+      return res.json(output);
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: (err as Error).message });
+    }
+  }
+
+  async findUserByEmail(req: Request, res: Response) {
+    const { email } = req.body;
+    try {
+      const output = await User.findOne({ where: { email: email } });
       return res.json(output);
     } catch (err) {
       return res.status(400).json({ error: true, msg: (err as Error).message });

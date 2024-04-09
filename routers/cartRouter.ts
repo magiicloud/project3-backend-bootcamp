@@ -6,7 +6,7 @@ const cartController = new CartController();
 export class CartRouter {
   routes = () => {
     const router = Router();
-    router.get("/getactivecart", cartController.retrieveActiveCart);
+    router.get("/getactivecart/:userId", cartController.retrieveActiveCart);
     router.post("/additemcart", cartController.addItemToCart);
     router.delete("/deleteitemincart", cartController.deleteItemInCart);
     router.put("/checkoutcyclecount", cartController.checkoutCart);

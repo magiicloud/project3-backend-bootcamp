@@ -4,7 +4,7 @@ import { sequelize } from "../db/models";
 
 export class CartController {
   async retrieveActiveCart(req: Request, res: Response) {
-    const userId = 1; //req.user.id; // Assuming you have the user's ID from session/authentication
+    const { userId } = req.params;
 
     try {
       const cart = await Cart.findOne({
@@ -89,7 +89,6 @@ export class CartController {
 
   async deleteItemInCart(req: Request, res: Response) {
     const { cartLineItemId } = req.body;
-    console.log(cartLineItemId);
 
     try {
       // Step 1: Find the CartLineItem by PK
@@ -117,7 +116,7 @@ export class CartController {
   }
 
   async checkoutCart(req: Request, res: Response) {
-    const userId = 1; //req.body.userId; // Or obtain the userId from session/authentication
+    const { userId } = req.body;
 
     try {
       // Sequelize managed transaction
