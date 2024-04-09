@@ -13,6 +13,25 @@ interface RoomAttributes {
 }
 
 export class BuildingsController {
+  async getBuildingsByUser(req: Request, res: Response) {
+    const userEmail = req.params.userEmail;
+    try {
+      const user = await User.findOne({ where: { email: userEmail } });
+      if (user) {
+        const output = await Building.findAll({
+          include: [
+            {
+              model: Room,
+            },
+            { model: BuildingUser, where: { user_id: user.id } },
+          ],
+        });
+        return res.json(output);
+      }
+    } catch (err) {
+      return res.status(400).json({ error: true, msg: (err as Error).message });
+    }
+  }
   async getAllBuildings(req: Request, res: Response) {
     try {
       const output = await Building.findAll({
@@ -31,6 +50,7 @@ export class BuildingsController {
   async AddNewBuilding(req: Request, res: Response) {
     const building = req.body.building;
     const rooms = req.body.rooms;
+    const userEmail = req.body.userEmail;
     try {
       const result = await sequelize.transaction(async (t) => {
         const newBuilding = await Building.create(building, {
@@ -43,6 +63,13 @@ export class BuildingsController {
             await Room.create(newRoom, { transaction: t });
           })
         );
+        const user = await User.findOne({ where: { email: userEmail } });
+        const newBuildingUser = {
+          building_id: newBuilding.id,
+          user_id: user?.id,
+          admin: true,
+        };
+        await BuildingUser.create(newBuildingUser, { transaction: t });
       });
       return res.json(result);
     } catch (err) {
