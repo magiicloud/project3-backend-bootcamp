@@ -11,6 +11,7 @@ import { Cart } from "./Cart";
 import { BuildingUser } from "./BuildingUser";
 
 interface UserAttributes {
+  auth_id: string;
   name?: string;
   email: string;
   profile_img_url?: string;
@@ -22,6 +23,9 @@ interface UserAttributes {
   underscored: true,
 })
 export class User extends Model<UserAttributes> {
+  @Column(DataType.STRING)
+  auth_id!: string;
+
   @Column(DataType.STRING)
   name?: string;
 

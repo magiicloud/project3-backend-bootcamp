@@ -7,6 +7,7 @@ export class UsersRouter {
   routes = () => {
     const router = Router();
     router.post("/users", usersController.updateUser);
+    router.get("/finduser", usersController.findUserByEmail);
     return router;
   };
 }
