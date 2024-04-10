@@ -73,4 +73,30 @@ export class BuildingsController {
       return res.status(400).json({ error: true, msg: err });
     }
   }
+
+  async AddBuildingUser(req: Request, res: Response) {
+    const { buildingId, newUserEmail, admin } = req.body;
+    try {
+      const result = await sequelize.transaction(async (t) => {
+        const user = await User.findOne({ where: { email: newUserEmail } });
+        if (!user) {
+          throw new Error("User not found");
+        } else {
+          const newBuildingUser = {
+            building_id: buildingId,
+            user_id: user.id,
+            admin: false,
+          };
+          return await BuildingUser.create(newBuildingUser, { transaction: t });
+        }
+      });
+      return res.json(result);
+    } catch (err) {
+      if (err instanceof Error) {
+        return res.status(400).json({ error: true, msg: err.message });
+      } else {
+        return res.status(400).json({ error: true, msg: err });
+      }
+    }
+  }
 }

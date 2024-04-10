@@ -70,6 +70,7 @@ export class ItemsController {
   async getRoomItems(req: Request, res: Response) {
     try {
       const { roomId } = req.params;
+      console.log(roomId);
       const output = await Item.findAll({
         include: [
           {
