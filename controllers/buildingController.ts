@@ -85,7 +85,7 @@ export class BuildingsController {
           const newBuildingUser = {
             building_id: buildingId,
             user_id: user.id,
-            admin: false,
+            admin: admin,
           };
           return await BuildingUser.create(newBuildingUser, { transaction: t });
         }

@@ -1,19 +1,41 @@
 import { Request, Response } from "express";
-import { Item, RoomItem, Room, CartLineItem } from "../db/models";
+import { sequelize } from "../db/models";
+import { Op } from "sequelize";
+import {
+  Item,
+  RoomItem,
+  Room,
+  CartLineItem,
+  Building,
+  BuildingUser,
+} from "../db/models";
 
 export class ItemsController {
   async getAllItems(req: Request, res: Response) {
+    const userId = req.params.userId;
     try {
-      const output = await Item.findAll({
-        include: [
-          {
-            model: RoomItem,
-            include: [{ model: Room, attributes: ["name"] }],
-          },
-        ],
-        order: [["id", "ASC"]],
+      const result = await sequelize.transaction(async (t) => {
+        const buildings = await Building.findAll({
+          include: [{ model: BuildingUser, where: { user_id: userId } }],
+        });
+        const buildingIds = buildings.map((building) => building.id);
+        const rooms = await Room.findAll({
+          where: { building_id: { [Op.in]: buildingIds } },
+        });
+        const roomIds = rooms.map((room) => room.id);
+        const output = await Item.findAll({
+          include: [
+            {
+              model: RoomItem,
+              include: [{ model: Room, attributes: ["name"] }],
+              where: { room_id: { [Op.in]: roomIds } },
+            },
+          ],
+          order: [["id", "ASC"]],
+        });
+        return output;
       });
-      return res.json(output);
+      return res.json(result);
     } catch (err) {
       return res.status(400).json({ error: true, msg: (err as Error).message });
     }
