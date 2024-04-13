@@ -42,9 +42,19 @@ export class ItemsController {
   }
 
   async getAllRooms(req: Request, res: Response) {
+    const userId = req.params.userId;
     try {
-      const output = await Room.findAll({ order: [["id", "ASC"]] });
-      return res.json(output);
+      const result = await sequelize.transaction(async (t) => {
+        const buildings = await Building.findAll({
+          include: [{ model: BuildingUser, where: { user_id: userId } }],
+        });
+        const buildingIds = buildings.map((building) => building.id);
+        const rooms = await Room.findAll({
+          where: { building_id: { [Op.in]: buildingIds } },
+        });
+        return rooms;
+      });
+      return res.json(result);
     } catch (err) {
       return res.status(400).json({ error: true, msg: (err as Error).message });
     }
