@@ -6,6 +6,7 @@ import { QueryTypes } from "sequelize";
 
 export class DashController {
   async getExpiringItemsCount(req: Request, res: Response) {
+    const buildingId = req.params.buildingId;
     try {
       const sixMonthsFromNow = new Date();
       sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
@@ -23,7 +24,8 @@ export class DashController {
           },
           {
             model: Room,
-            attributes: ["name"],
+            attributes: ["name", "building_id"],
+            where: { building_id: buildingId },
           },
         ],
         order: [["expiry_date", "ASC"]],
@@ -38,103 +40,32 @@ export class DashController {
     }
   }
 
-  async getItemsBelowParOLD(req: Request, res: Response) {
-    try {
-      const itemsBelowPar = await RoomItem.findAndCountAll({
-        include: [
-          {
-            model: Item,
-            attributes: ["par_level", "serial_num", "item_name"],
-          },
-          {
-            model: Room,
-            attributes: ["name"],
-          },
-        ],
-        where: sequelize.where(
-          sequelize.literal(`item.par_level * 0.5`),
-          Op.gte,
-          sequelize.col(`"RoomItem"."quantity"`)
-        ),
-        // attributes: {
-        //   include: [
-        //     // Include a custom attribute that flags if the quantity is below 50% of the par level
-        //     [
-        //       sequelize.literal(
-        //         `item.par_level * 0.5 >= "RoomItem"."quantity"`
-        //       ),
-        //       "isBelowPar",
-        //     ],
-        //   ],
-        // },
-      });
-      res.json({
-        success: true,
-        count: itemsBelowPar.count,
-        items: itemsBelowPar.rows,
-      });
-    } catch (error) {
-      console.error("Error getting items below par level:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to get items below par level",
-      });
-    }
-  }
-
-  // async getItemsBelowParNEW(req: Request, res: Response) {
-  //   try {
-  //     const itemsBelowPar = await RoomItem.findAndCountAll({
-  //       include: [
-  //         {
-  //           model: Item,
-  //           attributes: ["par_level", "serial_num", "item_name"],
-  //         },
-  //         {
-  //           model: Room,
-  //           attributes: ["name"],
-  //         },
-  //       ],
-  //       attributes: {
-  //         include: [
-  //           // Include a custom attribute that flags if the quantity is below 50% of the par level
-  //           [
-  //             sequelize.literal(
-  //               `item.par_level * 0.5 >= "RoomItem"."quantity"`
-  //             ),
-  //             "isBelowPar",
-  //           ],
-  //         ],
-  //       },
-  //     });
-
-  //     res.json({
-  //       success: true,
-  //       count: itemsBelowPar.count,
-  //       items: itemsBelowPar.rows,
-  //     });
-  //   } catch (error) {
-  //     console.error("Error getting items below par level:", error);
-  //     res.status(500).json({
-  //       success: false,
-  //       message: "Failed to get items below par level",
-  //     });
-  //   }
-  // }
-
   async getItemsBelowPar(req: Request, res: Response) {
-    const rawFindQuery = `SELECT * FROM
-          (SELECT "Item"."id", "Item"."serial_num", "Item"."item_name", "Item"."par_level",
-          (SELECT SUM(quantity) FROM "Room_Items" AS "roomItems" WHERE "roomItems"."item_id" = "Item"."id") AS "itemTotal"
-          FROM "Items" AS "Item") 
-          AS FilteredItems WHERE "itemTotal" <= ("par_level" * 1.5)
-          ORDER BY "itemTotal" ASC;`;
+    const buildingId = req.params.buildingId;
 
-    const rawCountQuery = `SELECT COUNT(*) FROM
-          (SELECT "Item"."id", "Item"."serial_num", "Item"."item_name", "Item"."par_level",
-          (SELECT SUM(quantity) FROM "Room_Items" AS "roomItems" WHERE "roomItems"."item_id" = "Item"."id") AS "itemTotal"
-          FROM "Items" AS "Item") 
-          AS FilteredItems WHERE "itemTotal" <= ("par_level" * 1.5);`;
+    const rawFindQuery = `
+      SELECT "Item"."id", "Item"."serial_num", "Item"."item_name", "Item"."par_level", COALESCE(SUM("roomItems"."quantity"), 0) AS "itemTotal"
+      FROM "Items" AS "Item"
+      LEFT JOIN "Room_Items" AS "roomItems" ON "roomItems"."item_id" = "Item"."id"
+      LEFT JOIN "Rooms" AS "Rooms" ON "Rooms"."id" = "roomItems"."room_id"
+      WHERE "Rooms"."building_id" = ${buildingId}
+      GROUP BY "Item"."id", "Item"."serial_num", "Item"."item_name", "Item"."par_level"
+      HAVING COALESCE(SUM("roomItems"."quantity"), 0) <= ("Item"."par_level" * 1.5)
+      ORDER BY "itemTotal" ASC;
+      `;
+
+    const rawCountQuery = `
+      SELECT COUNT(*)
+      FROM (
+          SELECT "Item"."id"
+          FROM "Items" AS "Item"
+          LEFT JOIN "Room_Items" AS "roomItems" ON "roomItems"."item_id" = "Item"."id"
+          LEFT JOIN "Rooms" AS "Rooms" ON "Rooms"."id" = "roomItems"."room_id"
+          WHERE "Rooms"."building_id" = ${buildingId}
+          GROUP BY "Item"."id"
+          HAVING COALESCE(SUM("roomItems"."quantity"), 0) <= ("Item"."par_level" * 1.5)
+      ) AS FilteredItems;
+      `;
 
     try {
       const itemsBelowPar = await sequelize.query(rawFindQuery, {
@@ -143,38 +74,6 @@ export class DashController {
       const countItemsBelowPar = await sequelize.query(rawCountQuery, {
         type: QueryTypes.SELECT,
       });
-      // const itemsBelowPar = await Item.findAll({
-      //   include: [
-      //     {
-      //       model: RoomItem,
-      //       attributes: ["quantity", "item_id", "uom"],
-      //       include: [
-      //         {
-      //           model: Room,
-      //           attributes: ["name"],
-      //         },
-      //       ],
-      //     },
-      //   ],
-      //   attributes: {
-      //     include: [
-      //       // Subquery to calculate the sum of quantities from RoomItems for each Item
-      //       [
-      //         sequelize.literal(`(
-      //       SELECT SUM(quantity)
-      //       FROM "Room_Items" AS "roomItems"
-      //       WHERE "roomItems"."item_id" = "Item"."id"
-      //     )`),
-      //         "itemTotal",
-      //       ],
-      //     ],
-      //   },
-      //   where: sequelize.where(
-      //     sequelize.literal(`"items"."par_level" * 0.5`),
-      //     Op.gte,
-      //     sequelize.col(`"items"."itemTotal"`)
-      //   ),
-      // });
 
       res.json({
         success: true,
@@ -183,10 +82,6 @@ export class DashController {
       });
     } catch (error) {
       console.error("Error getting items below par level:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to get items below par level",
-      });
     }
   }
 }

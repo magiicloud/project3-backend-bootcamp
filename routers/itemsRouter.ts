@@ -6,8 +6,8 @@ const itemsController = new ItemsController();
 export class ItemsRouter {
   routes = () => {
     const router = Router();
-    router.get("/allitems", itemsController.getAllItems);
-    router.get("/allrooms", itemsController.getAllRooms);
+    router.get("/allitems/:userId", itemsController.getAllItems);
+    router.get("/allrooms/:userId", itemsController.getAllRooms);
     router.get("/finditem/:itemId/:roomId", itemsController.findOneItem);
     router.get("/findserial/:serialNum/:roomId", itemsController.findBySerial);
     router.get("/items/:roomId", itemsController.getRoomItems);

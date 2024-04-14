@@ -6,8 +6,8 @@ const dashController = new DashController();
 export class DashRouter {
   routes = () => {
     const router = Router();
-    router.get("/getexpiry", dashController.getExpiringItemsCount);
-    router.get("/getbelowpar", dashController.getItemsBelowPar);
+    router.get("/getexpiry/:buildingId", dashController.getExpiringItemsCount);
+    router.get("/getbelowpar/:buildingId", dashController.getItemsBelowPar);
     return router;
   };
 }
