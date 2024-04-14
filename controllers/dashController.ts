@@ -42,52 +42,46 @@ export class DashController {
 
   async getItemsBelowPar(req: Request, res: Response) {
     const buildingId = req.params.buildingId;
+
+    const rawFindQuery = `
+      SELECT "Item"."id", "Item"."serial_num", "Item"."item_name", "Item"."par_level", COALESCE(SUM("roomItems"."quantity"), 0) AS "itemTotal"
+      FROM "Items" AS "Item"
+      LEFT JOIN "Room_Items" AS "roomItems" ON "roomItems"."item_id" = "Item"."id"
+      LEFT JOIN "Rooms" AS "Rooms" ON "Rooms"."id" = "roomItems"."room_id"
+      WHERE "Rooms"."building_id" = ${buildingId}
+      GROUP BY "Item"."id", "Item"."serial_num", "Item"."item_name", "Item"."par_level"
+      HAVING COALESCE(SUM("roomItems"."quantity"), 0) <= ("Item"."par_level" * 1.5)
+      ORDER BY "itemTotal" ASC;
+      `;
+
+    const rawCountQuery = `
+      SELECT COUNT(*)
+      FROM (
+          SELECT "Item"."id"
+          FROM "Items" AS "Item"
+          LEFT JOIN "Room_Items" AS "roomItems" ON "roomItems"."item_id" = "Item"."id"
+          LEFT JOIN "Rooms" AS "Rooms" ON "Rooms"."id" = "roomItems"."room_id"
+          WHERE "Rooms"."building_id" = ${buildingId}
+          GROUP BY "Item"."id"
+          HAVING COALESCE(SUM("roomItems"."quantity"), 0) <= ("Item"."par_level" * 1.5)
+      ) AS FilteredItems;
+      `;
+
     try {
-      const itemsBelowPar = await RoomItem.findAll({
-        include: [
-          {
-            model: Item,
-            attributes: ["par_level", "serial_num", "item_name"],
-          },
-          {
-            model: Room,
-            attributes: ["name", "building_id"],
-            where: { building_id: buildingId },
-          },
-        ],
-        attributes: {
-          include: [
-            // Include a custom attribute that flags if the quantity is below 50% of the par level
-            [
-              sequelize.literal(`"RoomItem"."quantity" * 100 /item.par_level`),
-              "parPercent",
-            ],
-          ],
-        },
-        where: sequelize.literal(
-          // only include items 150% or below par level
-          `"RoomItem"."quantity" * 100 /item.par_level <= 150`
-        ),
-        order: [
-          // Order the results by the custom attribute isBelowPar in ascending order
-          [
-            sequelize.literal(`"RoomItem"."quantity" * 100 /item.par_level`),
-            "ASC",
-          ],
-        ],
+      const itemsBelowPar = await sequelize.query(rawFindQuery, {
+        type: QueryTypes.SELECT,
+      });
+      const countItemsBelowPar = await sequelize.query(rawCountQuery, {
+        type: QueryTypes.SELECT,
       });
 
       res.json({
         success: true,
-        count: itemsBelowPar.length,
         items: itemsBelowPar,
+        count: countItemsBelowPar,
       });
     } catch (error) {
       console.error("Error getting items below par level:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to get items below par level",
-      });
     }
   }
 }
