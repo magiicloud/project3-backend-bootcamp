@@ -10,7 +10,7 @@ import { UsersRouter } from "./routers/usersRouter";
 
 dotenv.config();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
 // Authorization middleware. When used, the Access Token must
@@ -33,15 +33,16 @@ const cartRouter = new CartRouter().routes();
 const dashRouter = new DashRouter().routes();
 const usersrouter = new UsersRouter().routes();
 
-// app.use(checkJwt, itemsRouter);
-// app.use(checkJwt, buildingsRouter);
-// app.use(checkJwt, cartRouter);
-// app.use(checkJwt, dashRouter);
-app.use(itemsRouter);
-app.use(buildingsRouter);
-app.use(cartRouter);
-app.use(dashRouter);
-app.use(usersrouter);
+app.use(checkJwt, itemsRouter);
+app.use(checkJwt, buildingsRouter);
+app.use(checkJwt, cartRouter);
+app.use(checkJwt, dashRouter);
+app.use(checkJwt, usersrouter);
+// app.use(itemsRouter);
+// app.use(buildingsRouter);
+// app.use(cartRouter);
+// app.use(dashRouter);
+// app.use(usersrouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);
