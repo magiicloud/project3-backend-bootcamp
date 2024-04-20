@@ -30,6 +30,15 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        auth_id: "windowslive|5ff4a6dbea093d1d",
+        name: "Hong Yun Wong",
+        email: "hongyun_rc@outlook.com",
+        profile_img_url:
+          "https://s.gravatar.com/avatar/52b9fc7d5c6203f683d78a11f75b0497?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fhy.png",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]);
 
     await queryInterface.bulkInsert("Items", [

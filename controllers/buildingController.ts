@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import { Building, BuildingUser, User, Room, sequelize } from "../db/models";
-import { Sequelize } from "sequelize-typescript";
-import { Dialect, Transaction } from "sequelize";
 
 interface RoomAttributes {
   name: string;
