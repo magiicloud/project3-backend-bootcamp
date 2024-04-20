@@ -1,11 +1,4 @@
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  HasMany,
-  BelongsToMany,
-} from "sequelize-typescript";
+import { Table, Column, Model, DataType, HasMany } from "sequelize-typescript";
 import { Room } from "./Room";
 import { User } from "./User";
 import { BuildingUser } from "./BuildingUser";

@@ -25,12 +25,12 @@ const config = require(path.join(
 let sequelize: Sequelize;
 
 if (process.env.DATABASE_URL) {
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT as Dialect,
+  sequelize = new Sequelize({
+    username: process.env.USERNAME,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
+    host: process.env.HOST,
+    dialect: process.env.DIALECT as Dialect,
     models: [
       Building,
       BuildingUser,
@@ -49,8 +49,12 @@ if (process.env.DATABASE_URL) {
   sequelize = new Sequelize(dbUrl, config);
 } else {
   // Use the configuration file details
-  sequelize = new Sequelize(config.database, config.username, config.password, {
-    ...config,
+  sequelize = new Sequelize({
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT as Dialect,
     models: [
       Building,
       BuildingUser,
@@ -65,37 +69,15 @@ if (process.env.DATABASE_URL) {
   });
 }
 
-// const sequelize = new Sequelize({
-//   username: process.env.DB_USERNAME,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-//   host: process.env.DB_HOST,
-//   dialect: process.env.DB_DIALECT as Dialect,
-//   models: [
-//     Building,
-//     BuildingUser,
-//     CartLineItem,
-//     Item,
-//     Cart,
-//     Room,
-//     RoomItem,
-//     Transaction,
-//     User,
-//   ],
-// });
-
-// // Attach models to Sequelize instance
-// sequelize.addModels([
-//   Building,
-//   BuildingUser,
-//   CartLineItem,
-//   Item,
-//   Cart,
-//   Room,
-//   RoomItem,
-//   Transaction,
-//   User,
-// ]);
+// Confirms the connection to the database
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connected to the database!");
+  } catch (err) {
+    console.error("Error connecting to the database:", err);
+  }
+})();
 
 // Export model instance
 export {

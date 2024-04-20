@@ -1,16 +1,5 @@
 import { Request, Response } from "express";
-import { Building, BuildingUser, User, Room, sequelize } from "../db/models";
-import { Sequelize } from "sequelize-typescript";
-import { Dialect, Transaction, where } from "sequelize";
-
-interface RoomAttributes {
-  name: string;
-  left: Float64Array;
-  top: Float64Array;
-  width: Float64Array;
-  height: Float64Array;
-  building_id: number;
-}
+import { User } from "../db/models";
 
 export class UsersController {
   async updateUser(req: Request, res: Response) {

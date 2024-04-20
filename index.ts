@@ -38,11 +38,6 @@ app.use(checkJwt, buildingsRouter);
 app.use(checkJwt, cartRouter);
 app.use(checkJwt, dashRouter);
 app.use(checkJwt, usersrouter);
-// app.use(itemsRouter);
-// app.use(buildingsRouter);
-// app.use(cartRouter);
-// app.use(dashRouter);
-// app.use(usersrouter);
 
 app.listen(PORT, () => {
   console.log(`Express app listening on port ${PORT}!`);

@@ -27,6 +27,13 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        building_id: 1,
+        user_id: 4,
+        admin: true,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]);
 
     await queryInterface.bulkInsert("Cart_Line_Items", [
